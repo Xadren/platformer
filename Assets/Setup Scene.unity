@@ -372,6 +372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpHeight: 1.5
   timeToJumpApex: 0.4
+  moveSpeed: 4.5
 --- !u!23 &1467179097
 MeshRenderer:
   m_ObjectHideFlags: 0

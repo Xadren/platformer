@@ -78,22 +78,26 @@ public class Controller2D : MonoBehaviour
     {
         float directionY = Mathf.Sign(velocity.y);
         float rayLength = Mathf.Abs(velocity.y) + skinWidth;
-        for (int i = 0; i < verticalRayCount; i++)
-        {
-            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-            rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
-            Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength,Color.red);
+		for (int i = 0; i < verticalRayCount; i++) {
+			Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+			rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
+			RaycastHit2D hit = Physics2D.Raycast (rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+			Debug.DrawRay (rayOrigin, Vector2.up * directionY * rayLength, Color.red);
 
-            if (hit)
-            {
-                velocity.y = (hit.distance - skinWidth) * directionY;
-                rayLength = hit.distance;
+			if (hit) {
+				velocity.y = (hit.distance - skinWidth) * directionY;
+				rayLength = hit.distance;
 
-                collisions.above = directionY == 1; // if moving up set collisions.above to true;
-                collisions.below = directionY == -1; // if moving down set collisions.below to true;
-            }
-        }
+				collisions.above = directionY == 1; // if moving up set collisions.above to true;
+				collisions.below = directionY == -1; // if moving down set collisions.below to true;
+			}
+
+			if (collisions.climbingSlope) {
+				float directionX = Mathf.Sign (velocity.x);
+				rayLength = Mathf.Abs (velocity.x + skinWidth);
+				Vector2 rayOrigin = ((directionX == -1)? raycastOrigins.bottomLeft:raycastOrigins.bottomRight) + Vector2.up * velocity.y;
+			}
+		}
     }
 
     void ClimbSlope(ref Vector3 velocity, float slopeAngle)

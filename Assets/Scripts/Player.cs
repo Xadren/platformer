@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
     public float timeToJumpApex = .4f;
     float accelerationTimeAirborn = 0.2f;
     float accelerationTimeGrounded = 0.1f;
-    float moveSpeed = 6f;
+    public float moveSpeed = 6f;
     float gravity;
     float jumpVelocity;
     Vector3 velocity;
