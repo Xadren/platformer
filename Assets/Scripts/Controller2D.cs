@@ -17,7 +17,7 @@ public class Controller2D : RaycastController {
         base.Start();
 
     }
-    public void Move(Vector3 velocity)
+    public void Move(Vector3 velocity, bool standingOnPlatform = false)
     {
         UpdateRaycastOrigins();
         collisions.Reset();
@@ -37,6 +37,11 @@ public class Controller2D : RaycastController {
             VerticalCollisions(ref velocity);
         }
 
+        // allow a passenger to jump while standing on a platform
+        if (standingOnPlatform)
+        {
+            collisions.below = true;
+        }
 
         transform.Translate(velocity);
     }
@@ -57,6 +62,11 @@ public class Controller2D : RaycastController {
             if (hit)
             {
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+                if(hit.distance == 0)
+                {
+                    continue;
+                }
 
                 if (i == 0 && slopeAngle <= maxClimbAngle) // if the angle of the slope is less than the max allowed climb angle, allow the player to move up the slope.
                 {
