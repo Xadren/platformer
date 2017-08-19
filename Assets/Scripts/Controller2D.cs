@@ -11,6 +11,7 @@ public class Controller2D : RaycastController {
 
     
     public CollisionInfo collisions;
+    Vector2 playerInput;
 
     public override void Start()
     {
@@ -18,11 +19,17 @@ public class Controller2D : RaycastController {
         collisions.faceDirection = 1;
 
     }
-    public void Move(Vector3 velocity, bool standingOnPlatform = false)
+
+    public void Move(Vector2 velocity, bool standingOnPlatform)
+    {
+        Move(velocity, Vector2.zero, standingOnPlatform);
+    }
+    public void Move(Vector3 velocity, Vector2 input, bool standingOnPlatform = false)
     {
         UpdateRaycastOrigins();
         collisions.Reset();
         collisions.velocityOld = velocity;
+        playerInput = input;
 
         if(velocity.x != 0){
             collisions.faceDirection = (int)Mathf.Sign(velocity.x);
@@ -123,6 +130,23 @@ public class Controller2D : RaycastController {
 
             if (hit)
             {
+                if(hit.collider.tag == "Through")
+                {
+                    if(directionY == 1 || hit.distance == 0)
+                    {
+                        continue;
+                    }
+                    if (collisions.fallingThroughPlatform)
+                    {
+                        continue;
+                    }
+                    if(playerInput.y == -1)
+                    {
+                        collisions.fallingThroughPlatform = true;
+                        Invoke("ResetFallingThroughPlatform", .5f); // call this method after half a second to reset the fallingThroughPlatform boolean.
+                        continue;
+                    }
+                }
                 velocity.y = (hit.distance - skinWidth) * directionY;
                 rayLength = hit.distance;
 
@@ -200,6 +224,11 @@ public class Controller2D : RaycastController {
         }
     }
 
+    public void ResetFallingThroughPlatform()
+    {
+        collisions.fallingThroughPlatform = false;
+    }
+
     public struct CollisionInfo
     {
         public bool above, below, left, right;
@@ -207,6 +236,7 @@ public class Controller2D : RaycastController {
         public float slopeAngle, slopeAngleOld;
         public Vector3 velocityOld;
         public int faceDirection;
+        public bool fallingThroughPlatform;
         public void Reset()
         {
             above = below = false;

@@ -69,13 +69,7 @@ public class Player : MonoBehaviour
                 timeToWallUnstick = wallStickTime;
             }
 
-        }
-
-        if (controller.collisions.above || controller.collisions.below)
-        {
-            velocity.y = 0;
-        }
-       
+        }       
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -104,12 +98,21 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            velocity.y = minJumpVelocity;
+            if(velocity.y > minJumpVelocity)
+            {
+                velocity.y = minJumpVelocity;
+            }
+
         }
 
        
         velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+        controller.Move(velocity * Time.deltaTime, input);
+
+        if (controller.collisions.above || controller.collisions.below)
+        {
+            velocity.y = 0;
+        }
     }
 }
 
