@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 61962681405395024}
   - component: {fileID: 114167483011381434}
   m_Layer: 9
-  m_Name: New Prefab
+  m_Name: Moving Platform
   m_TagString: Through
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,7 +133,5 @@ MonoBehaviour:
   cyclic: 0
   waitTime: 0.5
   easeAmount: 1
-  localWaypoints:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 3, z: 0}
+  localWaypoints: []
   globalWaypoints: []
