@@ -23,6 +23,10 @@ public class Player : MonoBehaviour
 
     Controller2D controller;
 
+    Vector2 directionalInput;
+    bool wallSliding;
+    int wallDirX;
+
     // Use this for initialization
     void Start()
     {
@@ -37,53 +41,38 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        int wallDirX = (controller.collisions.left) ? -1 : 1;
-        bool wallSliding = false;
+        CalculateVelocity();
+        HandleWallSliding();
+              
+        controller.Move(velocity * Time.deltaTime, directionalInput);
 
-        float targetVelocityX = input.x * moveSpeed;
-        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborn);
-
-        if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0)
+        if (controller.collisions.above || controller.collisions.below)
         {
-            wallSliding = true;
+            velocity.y = 0;
+        }
+    }
+    public void setDirectionalInput(Vector2 input)
+    {
+        directionalInput = input;
+    }
 
-            if(velocity.y < -wallSlideSpeedMax)
-            {
-                velocity.y = -wallSlideSpeedMax;
-            }
-            if( timeToWallUnstick > 0)
-            {
-                velocityXSmoothing = 0;
-                velocity.x = 0;
-                if(input.x != wallDirX && input.x != 0)
-                {
-                    timeToWallUnstick -= Time.deltaTime;
-
-                }else
-                {
-                    timeToWallUnstick = wallStickTime;
-                }
-            }else
-            {
-                timeToWallUnstick = wallStickTime;
-            }
-
-        }       
-
+    public void onJumpInputDown()
+    {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (wallSliding)
             {
-                if(wallDirX == input.x)
+                if (wallDirX == directionalInput.x)
                 {
                     velocity.x = -wallDirX * wallJumpClimb.x;
                     velocity.y = wallJumpClimb.y;
-                }else if (input.x == 0)
+                }
+                else if (directionalInput.x == 0)
                 {
                     velocity.x = -wallDirX * wallJumpOff.x;
                     velocity.y = wallJumpOff.y;
-                }else
+                }
+                else
                 {
                     velocity.x = -wallDirX * wallLeap.x;
                     velocity.y = wallLeap.y;
@@ -95,23 +84,59 @@ public class Player : MonoBehaviour
 
             }
         }
+    }
 
+    public void onJumpInputUp()
+    {
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            if(velocity.y > minJumpVelocity)
+            if (velocity.y > minJumpVelocity)
             {
                 velocity.y = minJumpVelocity;
             }
 
         }
+    }
 
-       
+
+    void CalculateVelocity()
+    {
+        float targetVelocityX = directionalInput.x * moveSpeed;
+        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborn);
         velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime, input);
+    }
 
-        if (controller.collisions.above || controller.collisions.below)
+    void HandleWallSliding()
+    {
+        wallDirX = (controller.collisions.left) ? -1 : 1;
+        wallSliding = false;
+        if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0)
         {
-            velocity.y = 0;
+            wallSliding = true;
+
+            if (velocity.y < -wallSlideSpeedMax)
+            {
+                velocity.y = -wallSlideSpeedMax;
+            }
+            if (timeToWallUnstick > 0)
+            {
+                velocityXSmoothing = 0;
+                velocity.x = 0;
+                if (directionalInput.x != wallDirX && directionalInput.x != 0)
+                {
+                    timeToWallUnstick -= Time.deltaTime;
+
+                }
+                else
+                {
+                    timeToWallUnstick = wallStickTime;
+                }
+            }
+            else
+            {
+                timeToWallUnstick = wallStickTime;
+            }
+
         }
     }
 }
