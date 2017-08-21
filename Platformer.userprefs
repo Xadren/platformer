@@ -1,8 +1,12 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Controller2D.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DoctorController.cs">
     <Files>
-      <File FileName="Assets/Scripts/Controller2D.cs" Line="106" Column="45" />
+      <File FileName="Assets/Scripts/CameraFollow.cs" Line="60" Column="58" />
+      <File FileName="Assets/Scripts/Controller2D.cs" Line="127" Column="29" />
+      <File FileName="Assets/Materials/Platform_Texture.shader" Line="1" Column="31" />
+      <File FileName="Temp/Compiled-Unlit-Platform_Texture.shader" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/DoctorController.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
